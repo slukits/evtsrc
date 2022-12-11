@@ -8,9 +8,14 @@ evtsrc_fixture provides a running event source server in its own
 process for testing.
 """
 
-from gunicorn.app.base import BaseApplication
-from evtsrc import evtsrc
+import time
+from http import client
 from multiprocessing import Process
+
+from gunicorn.app.base import BaseApplication
+
+from evtsrc import evtsrc
+import http_const as http
 
 
 class EvtsrcFixture(BaseApplication, Process):
@@ -28,9 +33,9 @@ class EvtsrcFixture(BaseApplication, Process):
     workers = '1'
 
     def __init__(self):
-        self._port = EvtsrcFixture.port + 1
+        self.port = EvtsrcFixture.port + 1
         self.options = {
-            'bind': '127.0.0.1:{}'.format(self._port),
+            'bind': '127.0.0.1:{}'.format(self.port),
             'workers': EvtsrcFixture.workers,
         }
         self.application = evtsrc
@@ -50,6 +55,21 @@ class EvtsrcFixture(BaseApplication, Process):
     def load(self):
         """load provides the entry point to the application."""
         return self.application
+
+    def start(self):
+        Process.start(self)
+        # don't return from start before the server accepts connections
+        retry = 20
+        while True:
+            time.sleep(0.002)
+            try:
+                cnn = client.HTTPConnection('localhost', 11001, 0.01)
+            except ConnectionRefusedError:
+                retry -= 1
+                if retry == 0:
+                    raise
+            else:
+                break
 
     def run(self):
         """run spins up the event source server fixture for testing."""
