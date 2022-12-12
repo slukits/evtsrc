@@ -10,6 +10,7 @@ http const provides mainly http header constants in a broader sense
 needed by evtsrc, cmp_mock and evtsrc_fixture modules.
 """
 
+from typing import Tuple
 from http import HTTPStatus
 from collections import namedtuple
 
@@ -21,4 +22,5 @@ hdr = namedtuple('hdr', 'name value')
 HDR_CT_JSON = hdr("Content-Type", "application/json")
 
 
-def hdr_content_len(data): return hdr("Content-Length", str(len(data)))
+def hdr_content_len(data) -> Tuple[str, str]:
+    return hdr("Content-Length", str(len(data)))

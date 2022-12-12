@@ -44,7 +44,7 @@ class EvtsrcFixture(BaseApplication, Process):
         BaseApplication.__init__(self)
         Process.__init__(self)
 
-    def load_config(self):
+    def load_config(self) -> None:
         """
         load_config merges initially given option into gunicorn's
         configuration.
@@ -54,7 +54,7 @@ class EvtsrcFixture(BaseApplication, Process):
         for key, value in config.items():
             self.cfg.set(key.lower(), value)
 
-    def load(self):
+    def load(self) -> None:
         """load provides the entry point to the application."""
         return self.application
 
@@ -73,7 +73,7 @@ class EvtsrcFixture(BaseApplication, Process):
             else:
                 break
 
-    def run(self):
+    def run(self) -> None:
         """run spins up the event source server fixture for testing."""
         BaseApplication.run(self)
 

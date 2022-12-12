@@ -44,6 +44,7 @@ the growth would be only linear.  Two other problems are:
       unsuiting.
 """
 
+from typing import Iterator
 from http import HTTPStatus
 from collections import namedtuple
 import json
@@ -51,7 +52,7 @@ import json
 import http_const as http
 
 
-def evtsrc(environ, start_respond):
+def evtsrc(environ: dict, start_respond: callable) -> Iterator:
     """
     evtsrc is the entry point for the event source server which
     evaluates given wsgi (PEP 3333) environment environ for a mandatory
