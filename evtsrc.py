@@ -29,12 +29,12 @@ If software components would communicate to each other as it is typical
 for a system of micro services the growth of communication paths in
 dependency of the number of components would be exponential.  If a
 component only communicates with the event source and the api-provider
-the growth would be only linear.  Two other problems are:
+the growth would be constant.  Two other problems are:
 
     - if components are horizontally scaled it may be that two
-      components c and c' receive requests r(c) and r(c') at the time
-      the requests are received they may be valid but the execution of
-      one of the request may make the other invalid.
+      components c and c' receive requests r(c) and r(c') which at the
+      time they are received are valid but the execution of one of the
+      request may make the other invalid.
 
     - a request may depend on other components, i.e. an order may need a
       warehouse component to reserve inventory to be accepted.  The
