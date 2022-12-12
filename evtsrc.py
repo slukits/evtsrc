@@ -48,23 +48,19 @@ from http import HTTPStatus
 from collections import namedtuple
 import json
 
-OK = "{} {}".format(HTTPStatus.OK.value, HTTPStatus.OK.phrase)
-BAD = "{} {}".format(
-    HTTPStatus.BAD_REQUEST.value, HTTPStatus.BAD_REQUEST.phrase)
-
-hdr = namedtuple('hdr', 'name value')
-HDR_CT_JSON = hdr("Content-Type", "application/json")
-
-
-def hdr_content_len(data): return hdr("Content-Length", str(len(data)))
+import http_const as http
 
 
 def evtsrc(environ, start_respond):
-    """evtsrc is the entry point for the event source server which
+    """
+    evtsrc is the entry point for the event source server which
     evaluates given wsgi (PEP 3333) environment environ for a mandatory
     json post and leverages start_respond to deliver a mandatory json
     response.
     """
     data = json.dumps({'evtsrc': 'v0.0.0'}).encode('utf-8')
-    start_respond(OK, [HDR_CT_JSON, hdr_content_len(data)])
+    start_respond(
+        http.OK,
+        [http.HDR_CT_JSON, http.hdr_content_len(data)]
+    )
     return iter([data])
