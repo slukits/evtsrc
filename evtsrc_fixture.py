@@ -17,7 +17,6 @@ import random
 
 from gunicorn.app.base import BaseApplication
 
-from evtsrc import evtsrc
 import http_const as http
 
 
@@ -35,7 +34,7 @@ class EvtsrcFixture(BaseApplication, Process):
 
     workers = '1'
 
-    def __init__(self) -> None:
+    def __init__(self, app) -> None:
         """
         init sets up instantiated event source's host address with a
         random port found in the port property.  I.e. if an event source
@@ -48,8 +47,9 @@ class EvtsrcFixture(BaseApplication, Process):
         self.options = {
             'bind': '127.0.0.1:{}'.format(self.port),
             'workers': EvtsrcFixture.workers,
+            'loglevel': 'warning'
         }
-        self.application = evtsrc
+        self.application = app
         BaseApplication.__init__(self)
         Process.__init__(self)
 
@@ -67,7 +67,7 @@ class EvtsrcFixture(BaseApplication, Process):
         """load provides the entry point to the application."""
         return self.application
 
-    def start(self) -> None:
+    def start(self) -> 'EvtsrcFixture':
         """
         start starts non-blocking an event source server for testing and
         doesn't return before the event source is ready to accept
@@ -75,7 +75,7 @@ class EvtsrcFixture(BaseApplication, Process):
         """
         Process.start(self)
         # don't return from start before the server accepts connections
-        retry = 20
+        retry = 40
         while True:
             time.sleep(0.001)
             try:
@@ -90,14 +90,8 @@ class EvtsrcFixture(BaseApplication, Process):
                 if retry == 0:
                     raise
             else:
-                break
+                return self
 
     def run(self) -> None:
         """run runs the event source app blocking."""
         BaseApplication.run(self)
-
-
-if __name__ == "__main__":
-    fx = EvtsrcFixture()
-    fx.start()
-    fx.join()
