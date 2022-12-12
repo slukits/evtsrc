@@ -1,8 +1,9 @@
 #!/home/goedel/python/evtsrc/.env/bin/python
 # -*- coding: utf-8 -*-
 #
-# This file is part of evtsrc released under the MIT license.
-# See the NOTICE for more information.
+# Copyright (c) 2022 Stephan Lukits. All rights reserved.
+# Use of this source code is governed by a MIT-style
+# license that can be found in the LICENSE file.
 
 """
 evtsrc is an event source storing a software system's state changing
