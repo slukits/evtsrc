@@ -40,8 +40,9 @@ class EvtsrcFixture(BaseApplication, Process):
         init sets up instantiated event source's host address with a
         random port found in the port property.  I.e. if an event source
         start fails due to port collision an other try will use a
-        different port.  The number of workers is set to a minimum while
-        everything else defaults to Gunicorn's defaults.
+        different port.  The number of workers is set to a minimum, the
+        log-level decreased to 'warning' while everything else is left
+        to Gunicorn's defaults.
         """
         self.port = random.randrange(49152, 65535)
         self.options = {

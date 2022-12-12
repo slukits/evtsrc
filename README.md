@@ -12,7 +12,7 @@ appears if r(s1) depends on an (successful) operation o(s2).  Commonly
 the later problem is solved through intercommunication of components,
 i.e. s1 talks to s2.  But allowing intercommunication of components
 leads to an exponential growth of communications paths in dependency of
-the number of components.  Which makes it hard to reason about the whole
+the number of components.  This makes it hard to reason about the whole
 system as it grows.  Therefor I want to experiment here with an approach
 where components only communicate with the event source and not with
 each other.  Of course for an realistic example we also need to somehow

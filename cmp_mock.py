@@ -24,8 +24,8 @@ from evtsrc_fixture import EvtsrcFixture
 
 class CmpMock(client.HTTPConnection):
     """
-    CmpMock is used to simulate a component communication to an given event
-    source allowing to investigating its responses.
+    CmpMock is used to simulate a component communication to an given
+    event source allowing to investigating its responses.
     """
 
     def __init__(self, port: int, timeout: float = 0.01) -> None:
@@ -38,8 +38,10 @@ class CmpMock(client.HTTPConnection):
 
     def post(self, ep: str = None, data: dict = None) -> dict:
         """
-        post posts to given endpoint ep given data json encoded
-        and returns the decoded server response.
+        post posts to given endpoint ep given data json encoded and
+        returns the decoded server response.  Note the method and
+        headers arguments are only there to emulate error conditions;
+        usually they don't need to be touched.
         """
         ep, data = ep or '/', data or {}
         headers = {http.HDR_CT_JSON.name: http.HDR_CT_JSON.value}
