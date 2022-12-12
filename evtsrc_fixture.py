@@ -67,9 +67,14 @@ class EvtsrcFixture(BaseApplication, Process):
         # don't return from start before the server accepts connections
         retry = 20
         while True:
-            time.sleep(0.002)
+            time.sleep(0.001)
             try:
-                cnn = client.HTTPConnection('localhost', 11001, 0.01)
+                cnn = client.HTTPConnection('localhost', self.port, 0.01)
+                headers = {http.HDR_CT_JSON.name: http.HDR_CT_JSON.value}
+                response = cnn.request('POST', '/', '', headers)
+                # must have read response body to send an other request
+                if response:
+                    response.read().decode()
             except ConnectionRefusedError:
                 retry -= 1
                 if retry == 0:
