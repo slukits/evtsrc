@@ -19,7 +19,6 @@ from http import client
 import json
 
 import http_const as http
-from evtsrc_fixture import EvtsrcFixture
 
 
 class CmpMock(client.HTTPConnection):
@@ -36,16 +35,20 @@ class CmpMock(client.HTTPConnection):
         timeout = timeout or 0.01
         super().__init__('localhost', port, timeout)
 
-    def post(self, ep: str = None, data: dict = None) -> dict:
+    def post(self, ep: str = '/', data: dict = None,
+             method='POST', headers: dict = None) -> dict:
         """
         post posts to given endpoint ep given data json encoded and
         returns the decoded server response.  Note the method and
         headers arguments are only there to emulate error conditions;
         usually they don't need to be touched.
         """
-        ep, data = ep or '/', data or {}
-        headers = {http.HDR_CT_JSON.name: http.HDR_CT_JSON.value}
-        self.request('POST', ep, json.dumps(data), headers)
+        headers = headers or {
+            http.HDR_CT_JSON.name: http.HDR_CT_JSON.value}
+        if data is None:
+            self.request(method, ep, body=None, headers=headers)
+        else:
+            self.request(method, ep, json.dumps(data), headers)
         try:
             response = self.getresponse()
         except ConnectionError:
@@ -61,12 +64,7 @@ class CmpMock(client.HTTPConnection):
                 print >> sys.stderr,
                 "component mock: post: couldn't finish read from evtsrc"
             else:
-                return json.loads(bb.decode())
+                decoded = json.loads(bb.decode())
+                decoded['status'] = response.status
+                return decoded
         sys.exit(1)
-
-
-if __name__ == '__main__':
-    fx = EvtsrcFixture()
-    fx.start()
-    print(CmpMock(fx.port).post())
-    fx.terminate()
