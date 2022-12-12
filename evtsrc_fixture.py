@@ -25,20 +25,24 @@ import http_const as http
 # ports
 random.seed()
 
+
 class EvtsrcFixture(BaseApplication, Process):
     """
     An EvtsrcFixture instance fx spins up an event source server in its
-    own process by calling fx.start().  Use fx.post-method to post to
-    its rest-api.
+    own process by calling fx.start().  Use fx.terminate() to gracefully
+    shut down.
     """
-
-    # port allows us to spin up for each test case an event source
-    # server with different port in case the os hasn't released a port
-    # between to test cases.
-    port = 11000
 
     workers = '1'
 
+    def __init__(self) -> None:
+        """
+        init sets up instantiated event source's host address with a
+        random port found in the port property.  I.e. if an event source
+        start fails due to port collision an other try will use a
+        different port.  The number of workers is set to a minimum while
+        everything else defaults to Gunicorn's defaults.
+        """
         self.port = random.randrange(49152, 65535)
         self.options = {
             'bind': '127.0.0.1:{}'.format(self.port),
@@ -50,7 +54,7 @@ class EvtsrcFixture(BaseApplication, Process):
 
     def load_config(self) -> None:
         """
-        load_config merges initially given option into gunicorn's
+        load_config merges initially set option into gunicorn's
         configuration.
         """
         config = {key: value for key, value in self.options.items()
@@ -62,7 +66,12 @@ class EvtsrcFixture(BaseApplication, Process):
         """load provides the entry point to the application."""
         return self.application
 
-    def start(self):
+    def start(self) -> None:
+        """
+        start starts non-blocking an event source server for testing and
+        doesn't return before the event source is ready to accept
+        requests.
+        """
         Process.start(self)
         # don't return from start before the server accepts connections
         retry = 20
@@ -83,7 +92,7 @@ class EvtsrcFixture(BaseApplication, Process):
                 break
 
     def run(self) -> None:
-        """run spins up the event source server fixture for testing."""
+        """run runs the event source app blocking."""
         BaseApplication.run(self)
 
 
