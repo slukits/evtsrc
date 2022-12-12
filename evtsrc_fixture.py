@@ -13,12 +13,17 @@ process for testing.
 import time
 from http import client
 from multiprocessing import Process
+import random
 
 from gunicorn.app.base import BaseApplication
 
 from evtsrc import evtsrc
 import http_const as http
 
+
+# seed to produce with each tests run a different sequence of random
+# ports
+random.seed()
 
 class EvtsrcFixture(BaseApplication, Process):
     """
@@ -34,8 +39,7 @@ class EvtsrcFixture(BaseApplication, Process):
 
     workers = '1'
 
-    def __init__(self):
-        self.port = EvtsrcFixture.port + 1
+        self.port = random.randrange(49152, 65535)
         self.options = {
             'bind': '127.0.0.1:{}'.format(self.port),
             'workers': EvtsrcFixture.workers,
