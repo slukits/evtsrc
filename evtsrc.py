@@ -1,4 +1,3 @@
-#!/home/goedel/python/evtsrc/.env/bin/python
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2022 Stephan Lukits. All rights reserved.
