@@ -31,7 +31,6 @@ class CmpMock(client.HTTPConnection):
         init sets up a new CmpMock instance to use given port for event
         source request which time out after given timeout.
         """
-        timeout = timeout or 0.01
         super().__init__('localhost', port, timeout)
 
     def post(self, ep: str = '/', data: dict = None,

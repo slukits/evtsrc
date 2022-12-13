@@ -14,7 +14,10 @@ MSG_CONTENT_TYPE = 'expect application/json'
 
 
 def method(loc: str, msg: str, start_respond: callable):
-    # jsn = _err_json(loc, msg)  # type: bytes
+    """
+    method responds an 405 - method not allowed error for given source
+    location loc with given message msg.
+    """
     jsn = json.dumps({
         http.APP_NAME: http.APP_VERSION,
         'error': '{}: {}'.format(loc, msg)
@@ -27,7 +30,10 @@ def method(loc: str, msg: str, start_respond: callable):
 
 
 def content_type(loc: str, msg: str, start_respond: callable):
-    # jsn = _err_json(loc, msg)  # type: bytes
+    """
+    method responds an 400 - bad request error for given source location
+    loc with given message msg.
+    """
     jsn = json.dumps({
         http.APP_NAME: http.APP_VERSION,
         'error': '{}: {}'.format(loc, msg)
